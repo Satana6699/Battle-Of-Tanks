@@ -83,9 +83,9 @@ namespace Battle_Of_Tanks.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap first {
+        internal static System.Drawing.Bitmap bush {
             get {
-                object obj = ResourceManager.GetObject("first", resourceCulture);
+                object obj = ResourceManager.GetObject("bush", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace Battle_Of_Tanks.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap first1 {
+        internal static System.Drawing.Bitmap first {
             get {
-                object obj = ResourceManager.GetObject("first1", resourceCulture);
+                object obj = ResourceManager.GetObject("first", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

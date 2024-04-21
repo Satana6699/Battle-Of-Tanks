@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Battle_Of_Tanks_Lib.GameObjects
 {
-    public class TankPosition : GameObject
+    public class Bush : GameObject
     {
-        public string name;
-        public TankPosition(string name, Rectangle rectangle) : base(rectangle)
+        public Bush(Rectangle rectangle) : base(rectangle)
         {
-            this.name = name;
+            CanMove = true;
+            IsSolid = false;
         }
     }
 }

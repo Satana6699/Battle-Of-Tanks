@@ -24,17 +24,10 @@ namespace Battle_Of_Tanks
         {
             playerBox.Dispose();
 
-            Image imageFirst = Properties.Resources.first;
-            Battle_Of_Tanks_Lib.Point pointFirst = new(100, 100);
-            player.first = GeneratePLayer(pointFirst, 100, 10, 10, 20, imageFirst, "Семка");
 
-            Battle_Of_Tanks_Lib.Point pointSecond = new(200, 200);
-            Image imageSecond = Properties.Resources.second;
-            player.second = GeneratePLayer(pointSecond, 100, 10, 10, 20, imageSecond, "Спичка");
             
 
-            player.first.UpdateDate();
-            player.second.UpdateDate();
+            
             MapGenerate();
         }
 
@@ -49,37 +42,43 @@ namespace Battle_Of_Tanks
             gameObjects = MapManager.Generate(strings, gamePanel.Width, gamePanel.Height);
             foreach (var gameObject in gameObjects)
             {
-                PictureBox box = new PictureBox();
-                Image image = Properties.Resources.brick;
+                Image image = null;
                 if (gameObject is Brick) 
                     image = Properties.Resources.brick;
                 else if (gameObject is Water) 
                    image = Properties.Resources.water;
+                else if (gameObject is Bush)
+                   image = Properties.Resources.bush;
+                else { }
+
+                PictureBox box = new PictureBox();
                 box.Image = image;
 
+                if (gameObject is TankPosition tank && tank.name == "p1")
+                {
+                    Image imageFirst = Properties.Resources.first;
+                    player.first = GeneratePLayer(tank.Position.Point, 100, 10, 10, 20, imageFirst, "Семка");
+                    player.first.Tank.Position.Width = gameObject.Position.Width - gameObject.Position.Width / 4;
+                    player.first.Tank.Position.Height = gameObject.Position.Height - gameObject.Position.Height / 4;
+                    player.first.UpdateDate();
+                }
+
+                if (gameObject is TankPosition tank2 && tank2.name == "p2")
+                {
+                    Image imageSecond = Properties.Resources.second;
+                    player.second = GeneratePLayer(tank2.Position.Point, 100, 10, 10, 20, imageSecond, "Спичка");
+                    player.second.Tank.Position.Width = gameObject.Position.Width - gameObject.Position.Width / 4;
+                    player.second.Tank.Position.Height = gameObject.Position.Height - gameObject.Position.Height / 4;
+                    player.second.UpdateDate();
+                }
                 gameObjectsPicture.Add(new BlockPicture(gameObject, box));
                 gameObjectsPicture[gameObjectsPicture.Count - 1].UpdateDate();
                 gamePanel.Controls.Add(gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox);
+                if (gameObject is Bush)
+                    // Отрисовка сверху
+                    gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox.BringToFront(); ;
             }
 
-            foreach (var gameObject in gameObjects)
-            {
-
-                if (gameObject is Brick brick)
-                {
-                    int width = brick.Position.Width - brick.Position.Width / 3;
-                    int height = brick.Position.Height - brick.Position.Height / 3;
-
-                    player.first.Tank.Position.Width = width;
-                    player.first.Tank.Position.Height = height;
-                    player.first.UpdateDate();
-
-                    player.second.Tank.Position.Width = width;
-                    player.second.Tank.Position.Height = height;
-                    player.second.UpdateDate();
-                    break;
-                }
-            }
         }
 
         private void MainTimerEvent(object sender, EventArgs e)
