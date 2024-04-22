@@ -58,7 +58,7 @@
             // playerBox
             // 
             playerBox.BackColor = SystemColors.ControlDark;
-            playerBox.Image = Properties.Resources.fifth;
+            playerBox.Image = Properties.Resources.swamp;
             playerBox.Location = new Point(12, 49);
             playerBox.Name = "playerBox";
             playerBox.Size = new Size(125, 62);

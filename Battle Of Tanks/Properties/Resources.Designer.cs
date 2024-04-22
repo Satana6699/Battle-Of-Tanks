@@ -133,6 +133,16 @@ namespace Battle_Of_Tanks.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap swamp {
+            get {
+                object obj = ResourceManager.GetObject("swamp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap tank {
             get {
                 object obj = ResourceManager.GetObject("tank", resourceCulture);

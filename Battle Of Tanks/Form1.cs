@@ -46,7 +46,6 @@ namespace Battle_Of_Tanks
 
             int unitObject = 37;
             _gamePanel.Location = new System.Drawing.Point(12, 52);
-            _gamePanel.BackColor = Color.AliceBlue;
             _gamePanel.Width = unitObject * strings.GetLength(1);
             _gamePanel.Height = unitObject * strings.GetLength(0);
 
@@ -56,6 +55,8 @@ namespace Battle_Of_Tanks
                 Image image = null;
                 if (gameObject is Brick)
                     image = Properties.Resources.brick;
+                else if (gameObject is Swamp)
+                    image = Properties.Resources.swamp;
                 else if (gameObject is Water)
                     image = Properties.Resources.water;
                 else if (gameObject is Bush)
@@ -80,6 +81,7 @@ namespace Battle_Of_Tanks
                     player.first.Tank.Position.Width = gameObject.Position.Width - gameObject.Position.Width / 4;
                     player.first.Tank.Position.Height = gameObject.Position.Height - gameObject.Position.Height / 4;
                     player.first.UpdateDate();
+                    
                     box.Visible = false;
                 }
 
@@ -106,6 +108,14 @@ namespace Battle_Of_Tanks
                 if (gameObject is Bush)
                     // Отрисовка сверху
                     gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox.BringToFront();
+                
+            }
+
+            foreach (var obj in gameObjectsPicture)
+            {
+                if (obj.GameObject is Swamp)
+                    // Отрисовка снизу
+                    obj.PictureBox.SendToBack();
             }
 
         }
@@ -138,6 +148,7 @@ namespace Battle_Of_Tanks
 
         public void MovePLayer()
         {
+            // декоратор урона
             if (player.first.Tank.IsInBush() && player.first is not DamageDown)
             {
                 player.first = new DamageDown(player.first);
@@ -149,6 +160,7 @@ namespace Battle_Of_Tanks
                 player.first.UpdateImage(playerInfo.first.Image);
             }
 
+
             if (player.second.Tank.IsInBush() && player.second is not DamageDown)
             {
                 player.second = new DamageDown(player.second);
@@ -157,6 +169,30 @@ namespace Battle_Of_Tanks
             else if (!player.second.Tank.IsInBush() && player.second is DamageDown)
             {
                 player.second = new DamageUp(player.second);
+                player.second.UpdateImage(playerInfo.second.Image);
+            }
+
+            // декоратор скорости
+            if (player.first.Tank.IsInSwamp() && player.first is not SpeedDown)
+            {
+                player.first = new SpeedDown(player.first);
+                player.first.UpdateImage(playerInfo.first.Image);
+            }
+            else if (!player.first.Tank.IsInSwamp() && player.first is SpeedDown)
+            {
+                player.first = new SpeedUp(player.first);
+                player.first.UpdateImage(playerInfo.first.Image);
+            }
+
+
+            if (player.second.Tank.IsInSwamp() && player.second is not SpeedDown)
+            {
+                player.second = new SpeedDown(player.second);
+                player.second.UpdateImage(playerInfo.second.Image);
+            }
+            else if (!player.second.Tank.IsInSwamp() && player.second is SpeedDown)
+            {
+                player.second = new SpeedUp(player.second);
                 player.second.UpdateImage(playerInfo.second.Image);
             }
 
@@ -257,7 +293,20 @@ namespace Battle_Of_Tanks
                         player.first.Tank.LeaveBush();
                     }
                 }
+                if (obj is Swamp swamph)
+                {
+                    if (player.first.Tank.Position.Intersects(swamph.Position))
+                    {
+                        player.first.Tank.EnterSwamp();
+                        break;
+                    }
+                    else
+                    {
+                        player.first.Tank.LeaveSwamp();
+                    }
+                }
             }
+
             foreach (var obj in gameObjects)
             {
                 if (obj is Bush bush)
@@ -270,6 +319,19 @@ namespace Battle_Of_Tanks
                     else
                     {
                         player.second.Tank.LeaveBush();
+                    }
+                }
+
+                if (obj is Swamp swamph)
+                {
+                    if (player.second.Tank.Position.Intersects(swamph.Position))
+                    {
+                        player.second.Tank.EnterSwamp();
+                        break;
+                    }
+                    else
+                    {
+                        player.second.Tank.LeaveSwamp();
                     }
                 }
             }
@@ -526,11 +588,11 @@ namespace Battle_Of_Tanks
         {
             _gamePanel = new Panel();
             _gamePanel.Location = new System.Drawing.Point(12, 52);
-            _gamePanel.BackColor = System.Drawing.Color.AliceBlue;
-            _gamePanel.Width = 1;
-            _gamePanel.Height = 1;
+            _gamePanel.Width = 800;
+            _gamePanel.Height = 800;
             Controls.Add(_gamePanel);
             _gamePanel.BringToFront();
+            _gamePanel.BackColor = System.Drawing.Color.Gray;
             this.Focus();
         }
         private void CreateProgressBar()

@@ -21,8 +21,8 @@ namespace Battle_Of_Tanks.GameObjectPictures
         public virtual void UpdateDate()
         {
             PictureBox.Location = new System.Drawing.Point(GameObject.Position.Point.X, GameObject.Position.Point.Y);
-            PictureBox.Width = GameObject.Position.Width;
-            PictureBox.Height = GameObject.Position.Height;
+            PictureBox.Width = GameObject.Position.Width + 1;
+            PictureBox.Height = GameObject.Position.Height + 1;
             PictureBox.Padding = new Padding(0);
             PictureBox.Margin = new Padding(0);
 

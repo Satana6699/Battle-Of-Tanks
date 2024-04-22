@@ -27,6 +27,8 @@ namespace Battle_Of_Tanks_Lib.GameObjectFactories
                     return new WaterFactory(n, rwc);
                 case "b":
                     return new BushFactory(n, rwc);
+                case "s":
+                    return new SwampFactory(n, rwc);
                 case "p1":
                     return new TankPositionFactory(n, rwc);
                 case "p2":

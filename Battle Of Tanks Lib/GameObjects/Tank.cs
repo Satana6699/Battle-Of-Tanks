@@ -22,6 +22,7 @@ namespace Battle_Of_Tanks_Lib.GameObjects
         public int SpeedArmor { get; private set; }
         private int _maxArmors = 3;
         private bool isInBush = false;
+        private bool isInSwamp = false;
 
         public Tank(Rectangle position, int armorMaxPoint, int damage, int speed, int speedArmor) : base (position, speed)
         {
@@ -87,6 +88,20 @@ namespace Battle_Of_Tanks_Lib.GameObjects
         public bool IsInBush()
         {
             return isInBush;
+        }
+
+        public void EnterSwamp()
+        {
+            isInSwamp = true;
+        }
+
+        public void LeaveSwamp()
+        {
+            isInSwamp = false;
+        }
+        public bool IsInSwamp()
+        {
+            return isInSwamp;
         }
 
     }
