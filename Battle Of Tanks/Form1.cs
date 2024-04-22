@@ -5,27 +5,34 @@ using System.Diagnostics;
 using System.Numerics;
 using Rectangle = Battle_Of_Tanks_Lib.Rectangle;
 using Battle_Of_Tanks.Decorators;
+using Microsoft.VisualBasic;
 
 namespace Battle_Of_Tanks
 {
     public partial class Form1 : Form
     {
-        (TankPicture first, TankPicture second) player;
-        (List<ArmorPicture> first, List<ArmorPicture> second) armors = new (new List<ArmorPicture>(0), new List<ArmorPicture>(0));
-        List<GameObjectPicture> gameObjectsPicture = new List<GameObjectPicture>(0);
-        ((bool Up, bool Left, bool Down, bool Right) first, (bool Up, bool Left, bool Down, bool Right) second) click;
-        List<GameObject> gameObjects;
+        private (SettingsPlayer first, SettingsPlayer second) playerSettings;
+        private (TankPicture first, TankPicture second) player;
+        private (List<ArmorPicture> first, List<ArmorPicture> second) armors = new(new List<ArmorPicture>(0), new List<ArmorPicture>(0));
+        private List<GameObjectPicture> gameObjectsPicture = new List<GameObjectPicture>(0);
+        private  ((bool Up, bool Left, bool Down, bool Right) first, (bool Up, bool Left, bool Down, bool Right) second) click;
+        private List<GameObject> gameObjects;
+        private (char first, char second) Piu = ('c', 'n');
+
+        // Компоненты контролера
+        private Panel _gamePanel;
+        private (ProgressBar first, ProgressBar second) _progressBar;
+        private (Label first, Label second) _label;
         public Form1()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle; 
+            this.KeyPreview = true;
         }
 
         private void FormLoad(object sender, EventArgs e)
         {
             playerBox.Dispose();
-            MapGenerate();
-            Timer.Start();
         }
 
         private void MapGenerate()
@@ -33,22 +40,21 @@ namespace Battle_Of_Tanks
             string[,] strings = MapManager.Reed(@"D:\Семестр 4 (полигон)\Курсовая работа\Battle Of Tanks\Battle Of Tanks\data\maps\mapa.txt");
 
             int unitObject = 37;
-            /*Panel gamePanel = new Panel();
-            gamePanel.Location = new System.Drawing.Point(12,52);
-            gamePanel.BackColor = System.Drawing.Color.AliceBlue;*/
-            gamePanel.Width = unitObject * strings.GetLength(1);
-            gamePanel.Height = unitObject * strings.GetLength(0);
+            _gamePanel.Location = new System.Drawing.Point(12, 52);
+            _gamePanel.BackColor = System.Drawing.Color.AliceBlue;
+            _gamePanel.Width = unitObject * strings.GetLength(1);
+            _gamePanel.Height = unitObject * strings.GetLength(0);
 
-            gameObjects = MapManager.Generate(strings, gamePanel.Width, gamePanel.Height);
+            gameObjects = MapManager.Generate(strings, _gamePanel.Width, _gamePanel.Height);
             foreach (var gameObject in gameObjects)
             {
                 Image image = null;
-                if (gameObject is Brick) 
+                if (gameObject is Brick)
                     image = Properties.Resources.brick;
-                else if (gameObject is Water) 
-                   image = Properties.Resources.water;
+                else if (gameObject is Water)
+                    image = Properties.Resources.water;
                 else if (gameObject is Bush)
-                   image = Properties.Resources.bush;
+                    image = Properties.Resources.bush;
                 else { }
 
                 PictureBox box = new PictureBox();
@@ -57,7 +63,17 @@ namespace Battle_Of_Tanks
                 if (gameObject is TankPosition tank && tank.name == "p1")
                 {
                     Image imageFirst = Properties.Resources.first;
-                    player.first = GeneratePLayer(tank.Position.Point, 100, 10, 10, 50, imageFirst, "Семка");
+                    //player.first = GeneratePLayer(tank.Position.Point, 100, 10, 10, 50, imageFirst, "Семка");
+                    player.first = GeneratePLayer
+                        (
+                            tank.Position.Point,
+                            playerSettings.first.armorPoint,
+                            playerSettings.first.damage,
+                            playerSettings.first.speed,
+                            playerSettings.first.speedArmor,
+                            playerSettings.first.image,
+                            playerSettings.first.name
+                        );
                     player.first.Tank.Position.Width = gameObject.Position.Width - gameObject.Position.Width / 4;
                     player.first.Tank.Position.Height = gameObject.Position.Height - gameObject.Position.Height / 4;
                     player.first.UpdateDate();
@@ -66,8 +82,16 @@ namespace Battle_Of_Tanks
 
                 if (gameObject is TankPosition tank2 && tank2.name == "p2")
                 {
-                    Image imageSecond = Properties.Resources.second;
-                    player.second = GeneratePLayer(tank2.Position.Point, 100, 10, 10, 50, imageSecond, "Спичка");
+                    player.second = GeneratePLayer
+                        (
+                            tank2.Position.Point,
+                            playerSettings.second.armorPoint,
+                            playerSettings.second.damage,
+                            playerSettings.second.speed,
+                            playerSettings.second.speedArmor,
+                            playerSettings.second.image,
+                            playerSettings.second.name
+                        );
                     player.second.Tank.Position.Width = gameObject.Position.Width - gameObject.Position.Width / 4;
                     player.second.Tank.Position.Height = gameObject.Position.Height - gameObject.Position.Height / 4;
                     player.second.UpdateDate();
@@ -75,10 +99,10 @@ namespace Battle_Of_Tanks
                 }
                 gameObjectsPicture.Add(new BlockPicture(gameObject, box));
                 gameObjectsPicture[gameObjectsPicture.Count - 1].UpdateDate();
-                gamePanel.Controls.Add(gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox);
+                _gamePanel.Controls.Add(gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox);
                 if (gameObject is Bush)
                     // Отрисовка сверху
-                    gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox.BringToFront(); ;
+                    gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox.BringToFront();
             }
 
         }
@@ -88,27 +112,25 @@ namespace Battle_Of_Tanks
             if (player.first.Tank.ProcentHP() <= 0)
             {
                 Vinner(player.first);
-                armorPointProgressBarFirst.Value = 0;
+                _progressBar.first.Value = 0;
             }
             else
             {
-                armorPointProgressBarFirst.Value = player.first.Tank.ProcentHP();
+                _progressBar.first.Value = player.first.Tank.ProcentHP();
             }
 
             if (player.second.Tank.ProcentHP() <= 0)
             {
                 Vinner(player.second);
-                armorPointProgressBarSecond.Value = 0;
+                _progressBar.second.Value = 0;
             }
             else
             {
-                armorPointProgressBarSecond.Value = player.second.Tank.ProcentHP();
+                _progressBar.second.Value = player.second.Tank.ProcentHP();
             }
 
             ArmorManager();
             MovePLayer();
-
-
         }
 
         public void MovePLayer()
@@ -139,15 +161,15 @@ namespace Battle_Of_Tanks
             Rectangle rectangleFirst = (Rectangle)player.first.Tank.Position.Clone();
             if (click.first.Up) player.first.Tank.Movement(MovementHelper.Up);
             else if (click.first.Left) player.first.Tank.Movement(MovementHelper.Left);
-            else if(click.first.Down) player.first.Tank.Movement(MovementHelper.Down);
-            else if(click.first.Right) player.first.Tank.Movement(MovementHelper.Right);
+            else if (click.first.Down) player.first.Tank.Movement(MovementHelper.Down);
+            else if (click.first.Right) player.first.Tank.Movement(MovementHelper.Right);
 
-            
+
             Rectangle rectangleSecond = (Rectangle)player.second.Tank.Position.Clone();
             if (click.second.Up) player.second.Tank.Movement(MovementHelper.Up);
             else if (click.second.Left) player.second.Tank.Movement(MovementHelper.Left);
-            else if(click.second.Down) player.second.Tank.Movement(MovementHelper.Down);
-            else if(click.second.Right) player.second.Tank.Movement(MovementHelper.Right);
+            else if (click.second.Down) player.second.Tank.Movement(MovementHelper.Down);
+            else if (click.second.Right) player.second.Tank.Movement(MovementHelper.Right);
 
 
             Colisions(rectangleFirst, rectangleSecond);
@@ -156,23 +178,23 @@ namespace Battle_Of_Tanks
             player.second.UpdateDate();
         }
 
-        private void KeyIsDown(object sender, KeyEventArgs e)
+        private void KeyIsDown(object? sender, KeyEventArgs e)
         {
             KeyIsDownFirst(e);
             KeyIsDownSecond(e);
         }
-        private void KeyIsUp(object sender, KeyEventArgs e)
+        private void KeyIsUp(object? sender, KeyEventArgs e)
         {
             KeyIsUpFirst(e);
             KeyIsUpSecond(e);
         }
 
-        public TankPicture GeneratePLayer(Battle_Of_Tanks_Lib.Point point, int arborPoint, int damage, int speed, int speedArmor, Image image, string name)
+        public TankPicture GeneratePLayer(Battle_Of_Tanks_Lib.Point point, int armorPoint, int damage, int speed, int speedArmor, Image image, string name)
         {
             TankPicture tankPicture;
             PictureBox tankBox = new PictureBox();
             tankBox.Image = image;
-            gamePanel.Controls.Add(tankBox);
+            _gamePanel.Controls.Add(tankBox);
             tankPicture = new
                 (
                     new Tank
@@ -183,7 +205,7 @@ namespace Battle_Of_Tanks
                             Properties.Resources.tank.Width,
                             Properties.Resources.tank.Height
                         ),
-                        arborPoint,
+                        armorPoint,
                         damage,
                         speed,
                         speedArmor),
@@ -218,7 +240,7 @@ namespace Battle_Of_Tanks
                 }
             }
 
-            foreach(var obj in gameObjects)
+            foreach (var obj in gameObjects)
             {
                 if (obj is Bush bush)
                 {
@@ -233,7 +255,7 @@ namespace Battle_Of_Tanks
                     }
                 }
             }
-            foreach(var obj in gameObjects)
+            foreach (var obj in gameObjects)
             {
                 if (obj is Bush bush)
                 {
@@ -250,19 +272,18 @@ namespace Battle_Of_Tanks
             }
         }
 
-
         private void ArmorManager()
         {
-            foreach(var armor in armors.first)
+            foreach (var armor in armors.first)
             {
                 armor.Armor.Move();
                 armor.UpdateDate();
-                
+
 
                 if (armor.Armor.Position.Intersects(player.second.Tank.Position))
                 {
                     player.second.Tank.TakeDamage(player.first.Tank.Damage);
-                    gamePanel.Controls.Remove(armor.PictureBox);
+                    _gamePanel.Controls.Remove(armor.PictureBox);
                     armor.PictureBox.Dispose();
                     player.first.Tank.Remove(armor.Armor);
                     armors.first.Remove(armor);
@@ -274,11 +295,11 @@ namespace Battle_Of_Tanks
             {
                 armor.Armor.Move();
                 armor.UpdateDate();
-                
+
                 if (armor.Armor.Position.Intersects(player.first.Tank.Position))
                 {
                     player.first.Tank.TakeDamage(player.second.Tank.Damage);
-                    gamePanel.Controls.Remove(armor.PictureBox);
+                    _gamePanel.Controls.Remove(armor.PictureBox);
                     armor.PictureBox.Dispose();
                     player.second.Tank.Remove(armor.Armor);
                     armors.second.Remove(armor);
@@ -291,7 +312,7 @@ namespace Battle_Of_Tanks
                 {
                     if (armor.Armor.Position.Intersects(obj.Position) && obj.IsSolid)
                     {
-                        gamePanel.Controls.Remove(armor.PictureBox);
+                        _gamePanel.Controls.Remove(armor.PictureBox);
                         armor.PictureBox.Dispose();
                         player.first.Tank.Remove(armor.Armor);
                         armors.first.Remove(armor);
@@ -303,7 +324,7 @@ namespace Battle_Of_Tanks
                 {
                     if (armor.Armor.Position.Intersects(obj.Position) && obj.IsSolid)
                     {
-                        gamePanel.Controls.Remove(armor.PictureBox);
+                        _gamePanel.Controls.Remove(armor.PictureBox);
                         armor.PictureBox.Dispose();
                         player.second.Tank.Remove(armor.Armor);
                         armors.second.Remove(armor);
@@ -314,13 +335,13 @@ namespace Battle_Of_Tanks
         }
         private void KeyIsPress(object? sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == ' ' && player.first.Tank.IsPiu())
+            if (e.KeyChar == Piu.first && player.first.Tank.IsPiu())
             {
                 ArmorPicture armorPicture;
                 Image armor = Properties.Resources.armor;
                 PictureBox box = new PictureBox();
                 box.Image = armor;
-                gamePanel.Controls.Add(box);
+                _gamePanel.Controls.Add(box);
                 armorPicture = new
                     (
                         player.first.Tank.Piu(),
@@ -331,13 +352,13 @@ namespace Battle_Of_Tanks
                 armors.first.Add(armorPicture);
             }
 
-            if (e.KeyChar == '+' && player.second.Tank.IsPiu())
+            if (e.KeyChar == Piu.second && player.second.Tank.IsPiu())
             {
                 ArmorPicture armorPicture;
                 Image armor = Properties.Resources.armor;
                 PictureBox box = new PictureBox();
                 box.Image = armor;
-                gamePanel.Controls.Add(box);
+                _gamePanel.Controls.Add(box);
                 armorPicture = new
                     (
                         player.second.Tank.Piu(),
@@ -351,8 +372,10 @@ namespace Battle_Of_Tanks
 
         public void Vinner(TankPicture tank)
         {
-            gamePanel.Controls.Remove(tank.PictureBox);
+            _gamePanel.Controls.Remove(tank.PictureBox);
             tank.PictureBox.Dispose();
+            Timer.Stop();
+            MessageBox.Show("Выиграл игрок: " + tank.Name);
         }
         private void KeyIsUpFirst(KeyEventArgs e)
         {
@@ -444,6 +467,77 @@ namespace Battle_Of_Tanks
             {
                 click.second.Down = true;
             }
+        }
+
+        private void StartGame(object sender, EventArgs e)
+        {
+            this.KeyDown += KeyIsDown;
+            this.KeyPress += KeyIsPress;
+            this.KeyUp += KeyIsUp;
+            InitializePlayers();
+            InitializeGameComponent();
+            MapGenerate();
+            Timer.Start();
+        }
+        private void InitializePlayers()
+        {
+            playerSettings.first = new(100, 10, 10, 50, Properties.Resources.first, "Ослик");
+            playerSettings.second = new(100, 10, 10, 50, Properties.Resources.second, "Козлик");
+        }
+        private void InitializeGameComponent()
+        {
+            CreateGamePanel();
+            CreateProgressBar();
+            CreateLabel();
+        }
+        private void CreateGamePanel()
+        {
+            _gamePanel = new Panel();
+            _gamePanel.Location = new System.Drawing.Point(12, 52);
+            _gamePanel.BackColor = System.Drawing.Color.AliceBlue;
+            _gamePanel.Width = 1;
+            _gamePanel.Height = 1;
+            Controls.Add(_gamePanel);
+            _gamePanel.BringToFront();
+            this.Focus();
+        }
+        private void CreateProgressBar()
+        {
+            int widthProgressBar = 180;
+            int heightProgressBar = 25;
+
+            _progressBar.first = new ProgressBar();
+            _progressBar.first.Location = new System.Drawing.Point(176, 21);
+            _progressBar.first.Width = widthProgressBar;
+            _progressBar.first.Height = heightProgressBar;
+            Controls.Add(_progressBar.first);
+
+            _progressBar.second = new ProgressBar();
+            _progressBar.second.Location = new System.Drawing.Point(1338, 21);
+            _progressBar.second.Width = widthProgressBar;
+            _progressBar.second.Height = heightProgressBar;
+            Controls.Add(_progressBar.second);
+
+        }
+        private void CreateLabel()
+        {
+
+            int widthLabel = 160;
+            int heightLabel = 25;
+
+            _label.first = new Label();
+            _label.first.Location = new System.Drawing.Point(9, 21);
+            _label.first.Width = widthLabel;
+            _label.first.Height = heightLabel;
+            _label.first.Text = playerSettings.first.name;
+            Controls.Add(_label.first);
+
+            _label.second = new Label();
+            _label.second.Location = new System.Drawing.Point(1170, 21);
+            _label.second.Width = widthLabel;
+            _label.second.Height = heightLabel;
+            _label.second.Text = playerSettings.second.name;
+            Controls.Add(_label.second);
         }
     }
 }

@@ -30,13 +30,8 @@
         {
             components = new System.ComponentModel.Container();
             Timer = new System.Windows.Forms.Timer(components);
-            armorPointLabel1 = new Label();
-            armorPointLabel2 = new Label();
-            armorPointProgressBarFirst = new ProgressBar();
-            armorPointProgressBarSecond = new ProgressBar();
-            gamePanel = new Panel();
+            playButton = new Button();
             playerBox = new PictureBox();
-            gamePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)playerBox).BeginInit();
             SuspendLayout();
             // 
@@ -45,56 +40,24 @@
             Timer.Interval = 30;
             Timer.Tick += MainTimerEvent;
             // 
-            // armorPointLabel1
+            // playButton
             // 
-            armorPointLabel1.AutoSize = true;
-            armorPointLabel1.Font = new Font("Segoe UI", 11F);
-            armorPointLabel1.Location = new Point(9, 21);
-            armorPointLabel1.Name = "armorPointLabel1";
-            armorPointLabel1.Size = new Size(161, 25);
-            armorPointLabel1.TabIndex = 0;
-            armorPointLabel1.Text = "armorPointLabel1";
-            // 
-            // armorPointLabel2
-            // 
-            armorPointLabel2.AutoSize = true;
-            armorPointLabel2.Font = new Font("Segoe UI", 11F);
-            armorPointLabel2.Location = new Point(1171, 21);
-            armorPointLabel2.Name = "armorPointLabel2";
-            armorPointLabel2.Size = new Size(161, 25);
-            armorPointLabel2.TabIndex = 1;
-            armorPointLabel2.Text = "armorPointLabel2";
-            // 
-            // armorPointProgressBarFirst
-            // 
-            armorPointProgressBarFirst.ForeColor = SystemColors.ControlDarkDark;
-            armorPointProgressBarFirst.Location = new Point(176, 21);
-            armorPointProgressBarFirst.Name = "armorPointProgressBarFirst";
-            armorPointProgressBarFirst.Size = new Size(179, 25);
-            armorPointProgressBarFirst.TabIndex = 2;
-            // 
-            // armorPointProgressBarSecond
-            // 
-            armorPointProgressBarSecond.ForeColor = SystemColors.ControlDarkDark;
-            armorPointProgressBarSecond.Location = new Point(1338, 21);
-            armorPointProgressBarSecond.Name = "armorPointProgressBarSecond";
-            armorPointProgressBarSecond.Size = new Size(179, 25);
-            armorPointProgressBarSecond.TabIndex = 3;
-            // 
-            // gamePanel
-            // 
-            gamePanel.BackColor = Color.Transparent;
-            gamePanel.Controls.Add(playerBox);
-            gamePanel.Location = new Point(12, 52);
-            gamePanel.Name = "gamePanel";
-            gamePanel.Size = new Size(1505, 805);
-            gamePanel.TabIndex = 5;
+            playButton.BackgroundImage = Properties.Resources.tank;
+            playButton.Font = new Font("Showcard Gothic", 30F);
+            playButton.ForeColor = SystemColors.ActiveCaptionText;
+            playButton.Location = new Point(650, 818);
+            playButton.Name = "playButton";
+            playButton.Size = new Size(259, 78);
+            playButton.TabIndex = 6;
+            playButton.Text = "Play";
+            playButton.UseVisualStyleBackColor = true;
+            playButton.Click += StartGame;
             // 
             // playerBox
             // 
             playerBox.BackColor = SystemColors.ControlDark;
             playerBox.Image = Properties.Resources.water;
-            playerBox.Location = new Point(3, 3);
+            playerBox.Location = new Point(12, 49);
             playerBox.Name = "playerBox";
             playerBox.Size = new Size(125, 62);
             playerBox.TabIndex = 0;
@@ -108,31 +71,19 @@
             BackColor = SystemColors.ActiveCaption;
             BackgroundImageLayout = ImageLayout.None;
             ClientSize = new Size(1582, 953);
-            Controls.Add(gamePanel);
-            Controls.Add(armorPointProgressBarSecond);
-            Controls.Add(armorPointProgressBarFirst);
-            Controls.Add(armorPointLabel2);
-            Controls.Add(armorPointLabel1);
+            Controls.Add(playerBox);
+            Controls.Add(playButton);
             Name = "Form1";
             Text = "Form1";
             Load += FormLoad;
-            KeyDown += KeyIsDown;
-            KeyPress += KeyIsPress;
-            KeyUp += KeyIsUp;
-            gamePanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)playerBox).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private System.Windows.Forms.Timer Timer;
-        private Label armorPointLabel1;
-        private Label armorPointLabel2;
-        private ProgressBar armorPointProgressBarFirst;
-        private ProgressBar armorPointProgressBarSecond;
-        private Panel gamePanel;
+        private Button playButton;
         private PictureBox playerBox;
     }
 }
