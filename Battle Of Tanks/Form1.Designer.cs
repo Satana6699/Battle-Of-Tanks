@@ -32,6 +32,8 @@
             Timer = new System.Windows.Forms.Timer(components);
             playButton = new Button();
             playerBox = new PictureBox();
+            enterPlayerFirstButton = new Button();
+            enterPlayerSecondButton = new Button();
             ((System.ComponentModel.ISupportInitialize)playerBox).BeginInit();
             SuspendLayout();
             // 
@@ -63,6 +65,28 @@
             playerBox.TabIndex = 0;
             playerBox.TabStop = false;
             // 
+            // enterPlayerFirstButton
+            // 
+            enterPlayerFirstButton.BackColor = Color.FromArgb(255, 128, 0);
+            enterPlayerFirstButton.Location = new Point(650, 603);
+            enterPlayerFirstButton.Name = "enterPlayerFirstButton";
+            enterPlayerFirstButton.Size = new Size(259, 78);
+            enterPlayerFirstButton.TabIndex = 7;
+            enterPlayerFirstButton.Text = "Регистрация игрока 1";
+            enterPlayerFirstButton.UseVisualStyleBackColor = false;
+            enterPlayerFirstButton.Click += enterPlayerFirstButton_Click;
+            // 
+            // enterPlayerSecondButton
+            // 
+            enterPlayerSecondButton.BackColor = Color.FromArgb(255, 128, 0);
+            enterPlayerSecondButton.Location = new Point(650, 711);
+            enterPlayerSecondButton.Name = "enterPlayerSecondButton";
+            enterPlayerSecondButton.Size = new Size(259, 78);
+            enterPlayerSecondButton.TabIndex = 8;
+            enterPlayerSecondButton.Text = "Регистрация игрока 2";
+            enterPlayerSecondButton.UseVisualStyleBackColor = false;
+            enterPlayerSecondButton.Click += enterPlayerSecondButton_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -71,6 +95,8 @@
             BackColor = SystemColors.ActiveCaption;
             BackgroundImageLayout = ImageLayout.None;
             ClientSize = new Size(1582, 953);
+            Controls.Add(enterPlayerSecondButton);
+            Controls.Add(enterPlayerFirstButton);
             Controls.Add(playerBox);
             Controls.Add(playButton);
             Name = "Form1";
@@ -85,5 +111,7 @@
         private System.Windows.Forms.Timer Timer;
         private Button playButton;
         private PictureBox playerBox;
+        private Button enterPlayerFirstButton;
+        private Button enterPlayerSecondButton;
     }
 }

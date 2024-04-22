@@ -15,18 +15,20 @@ namespace Battle_Of_Tanks
         private (TankPicture first, TankPicture second) player;
         private (List<ArmorPicture> first, List<ArmorPicture> second) armors = new(new List<ArmorPicture>(0), new List<ArmorPicture>(0));
         private List<GameObjectPicture> gameObjectsPicture = new List<GameObjectPicture>(0);
-        private  ((bool Up, bool Left, bool Down, bool Right) first, (bool Up, bool Left, bool Down, bool Right) second) click;
+        private ((bool Up, bool Left, bool Down, bool Right) first, (bool Up, bool Left, bool Down, bool Right) second) click;
         private List<GameObject> gameObjects;
         private (char first, char second) Piu = ('c', 'n');
-
+        private (TankInfo first, TankInfo second) playerInfo;
+        private (bool first, bool second) registerPlayer = (false, false);
         // Компоненты контролера
         private Panel _gamePanel;
         private (ProgressBar first, ProgressBar second) _progressBar;
         private (Label first, Label second) _label;
+        private (Panel t1, Panel t2, Panel t3, Panel t4, Panel t5) _panelSettingsForPlayers;
         public Form1()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.FixedSingle; 
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
         }
 
@@ -471,18 +473,36 @@ namespace Battle_Of_Tanks
 
         private void StartGame(object sender, EventArgs e)
         {
-            this.KeyDown += KeyIsDown;
-            this.KeyPress += KeyIsPress;
-            this.KeyUp += KeyIsUp;
-            InitializePlayers();
-            InitializeGameComponent();
-            MapGenerate();
-            Timer.Start();
+            // Игра запустить только если 2 игрока зарегистрируют свои танки
+            if (registerPlayer.first && registerPlayer.second)
+            {
+                this.KeyDown += KeyIsDown;
+                this.KeyPress += KeyIsPress;
+                this.KeyUp += KeyIsUp;
+                InitializePlayers();
+                InitializeGameComponent();
+                MapGenerate();
+                Timer.Start();
+            }
         }
         private void InitializePlayers()
         {
-            playerSettings.first = new(100, 10, 10, 50, Properties.Resources.first, "Ослик");
-            playerSettings.second = new(100, 10, 10, 50, Properties.Resources.second, "Козлик");
+            playerSettings.first = new
+                (
+                playerInfo.first.ArmorPoints,
+                playerInfo.first.Damage,
+                playerInfo.first.Speed,
+                playerInfo.first.SpeedArmor,
+                Properties.Resources.first,
+                playerInfo.first.Name);
+            playerSettings.second = new
+                (
+                playerInfo.second.ArmorPoints,
+                playerInfo.second.Damage,
+                playerInfo.second.Speed,
+                playerInfo.second.SpeedArmor,
+                Properties.Resources.second,
+                playerInfo.second.Name);
         }
         private void InitializeGameComponent()
         {
@@ -490,6 +510,7 @@ namespace Battle_Of_Tanks
             CreateProgressBar();
             CreateLabel();
         }
+
         private void CreateGamePanel()
         {
             _gamePanel = new Panel();
@@ -538,6 +559,29 @@ namespace Battle_Of_Tanks
             _label.second.Height = heightLabel;
             _label.second.Text = playerSettings.second.name;
             Controls.Add(_label.second);
+        }
+
+
+        private void enterPlayerFirstButton_Click(object sender, EventArgs e)
+        {
+            TankSelectionForm tankSelectionForm = new TankSelectionForm(this);
+            if (tankSelectionForm.ShowDialog() == DialogResult.OK)
+            {
+                playerInfo.first = TankInfo.TankInFoForPLayer;
+                enterPlayerFirstButton.BackColor = Color.Green;
+                registerPlayer.first = true;
+            }
+        }
+
+        private void enterPlayerSecondButton_Click(object sender, EventArgs e)
+        {
+            TankSelectionForm tankSelectionForm = new TankSelectionForm(this);
+            if (tankSelectionForm.ShowDialog() == DialogResult.OK)
+            {
+                playerInfo.second = TankInfo.TankInFoForPLayer;
+                enterPlayerSecondButton.BackColor = Color.Green;
+                registerPlayer.second = true;
+            }
         }
     }
 }

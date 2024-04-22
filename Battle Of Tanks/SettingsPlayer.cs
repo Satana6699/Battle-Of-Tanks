@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Battle_Of_Tanks
 {
+    
+
     public class SettingsPlayer
     {
         public int armorPoint;
