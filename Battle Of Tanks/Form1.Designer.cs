@@ -42,8 +42,7 @@
             // 
             // Timer
             // 
-            Timer.Enabled = true;
-            Timer.Interval = 10;
+            Timer.Interval = 30;
             Timer.Tick += MainTimerEvent;
             // 
             // armorPointLabel1
@@ -60,7 +59,7 @@
             // 
             armorPointLabel2.AutoSize = true;
             armorPointLabel2.Font = new Font("Segoe UI", 11F);
-            armorPointLabel2.Location = new Point(1024, 21);
+            armorPointLabel2.Location = new Point(1171, 21);
             armorPointLabel2.Name = "armorPointLabel2";
             armorPointLabel2.Size = new Size(161, 25);
             armorPointLabel2.TabIndex = 1;
@@ -77,7 +76,7 @@
             // armorPointProgressBarSecond
             // 
             armorPointProgressBarSecond.ForeColor = SystemColors.ControlDarkDark;
-            armorPointProgressBarSecond.Location = new Point(1191, 21);
+            armorPointProgressBarSecond.Location = new Point(1338, 21);
             armorPointProgressBarSecond.Name = "armorPointProgressBarSecond";
             armorPointProgressBarSecond.Size = new Size(179, 25);
             armorPointProgressBarSecond.TabIndex = 3;

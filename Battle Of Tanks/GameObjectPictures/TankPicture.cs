@@ -10,19 +10,27 @@ namespace Battle_Of_Tanks.GameObjectPictures
 {
     public class TankPicture : GameObjectPicture
     {
+        public delegate Image ImageUpdateHandler();
+        public event ImageUpdateHandler ImageUpdated;
         public Tank Tank { get; set; }
-        private Image Image { get; set; }
+        public Image Image { get; set; }
         public string Name { get; set; }
 
         public TankPicture(Tank tank, PictureBox pictureBox, string name) : base(tank, pictureBox)
         {
             Tank = tank;
             PictureBox = pictureBox;
-            Image = pictureBox.Image;
             Name = name;
-
         }
 
+        public void SetImageUpdateDelegate(ImageUpdateHandler imageUpdated)
+        {
+            ImageUpdated += imageUpdated;
+        }
+        public void UpdateImage(Image image)
+        {
+            Image = image;
+        }
         public override void UpdateDate()
         {
             PictureBox.Location = new System.Drawing.Point(Tank.Position.Point.X, Tank.Position.Point.Y);

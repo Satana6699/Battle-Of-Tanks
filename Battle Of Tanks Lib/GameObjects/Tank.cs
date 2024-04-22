@@ -18,9 +18,11 @@ namespace Battle_Of_Tanks_Lib.GameObjects
         public List<Armor> armors = new List<Armor>(0);
         public int ArmorMaxPoint { get; private set; }
         public int ArmorPoint { get; private set; }
-        public int Damage { get; private set; }
+        public int Damage { get; set; }
         public int SpeedArmor { get; private set; }
         private int _maxArmors = 3;
+        private bool isInBush = false;
+
         public Tank(Rectangle position, int armorMaxPoint, int damage, int speed, int speedArmor) : base (position, speed)
         {
             ArmorMaxPoint = armorMaxPoint;
@@ -72,5 +74,20 @@ namespace Battle_Of_Tanks_Lib.GameObjects
 
 
         public void Remove(Armor armor) => armors.Remove(armor);
+
+        public void EnterBush()
+        {
+            isInBush = true;
+        }
+
+        public void LeaveBush()
+        {
+            isInBush = false;
+        }
+        public bool IsInBush()
+        {
+            return isInBush;
+        }
+
     }
 }
