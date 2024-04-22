@@ -20,11 +20,13 @@ namespace Battle_Of_Tanks
         private (char first, char second) Piu = ('c', 'n');
         private (TankInfo first, TankInfo second) playerInfo;
         private (bool first, bool second) registerPlayer = (false, false);
+
+        private List<TankInfo> availableTanks = new List<TankInfo>();
+
         // Компоненты контролера
         private Panel _gamePanel;
         private (ProgressBar first, ProgressBar second) _progressBar;
         private (Label first, Label second) _label;
-        private (Panel t1, Panel t2, Panel t3, Panel t4, Panel t5) _panelSettingsForPlayers;
         public Form1()
         {
             InitializeComponent();
@@ -35,6 +37,7 @@ namespace Battle_Of_Tanks
         private void FormLoad(object sender, EventArgs e)
         {
             playerBox.Dispose();
+            InitializeAvailableTanks();
         }
 
         private void MapGenerate()
@@ -43,7 +46,7 @@ namespace Battle_Of_Tanks
 
             int unitObject = 37;
             _gamePanel.Location = new System.Drawing.Point(12, 52);
-            _gamePanel.BackColor = System.Drawing.Color.AliceBlue;
+            _gamePanel.BackColor = Color.AliceBlue;
             _gamePanel.Width = unitObject * strings.GetLength(1);
             _gamePanel.Height = unitObject * strings.GetLength(0);
 
@@ -64,8 +67,6 @@ namespace Battle_Of_Tanks
 
                 if (gameObject is TankPosition tank && tank.name == "p1")
                 {
-                    Image imageFirst = Properties.Resources.first;
-                    //player.first = GeneratePLayer(tank.Position.Point, 100, 10, 10, 50, imageFirst, "Семка");
                     player.first = GeneratePLayer
                         (
                             tank.Position.Point,
@@ -113,7 +114,7 @@ namespace Battle_Of_Tanks
         {
             if (player.first.Tank.ProcentHP() <= 0)
             {
-                Vinner(player.first);
+                Vinner(player.second);
                 _progressBar.first.Value = 0;
             }
             else
@@ -123,7 +124,7 @@ namespace Battle_Of_Tanks
 
             if (player.second.Tank.ProcentHP() <= 0)
             {
-                Vinner(player.second);
+                Vinner(player.first);
                 _progressBar.second.Value = 0;
             }
             else
@@ -140,23 +141,23 @@ namespace Battle_Of_Tanks
             if (player.first.Tank.IsInBush() && player.first is not DamageDown)
             {
                 player.first = new DamageDown(player.first);
-                player.first.UpdateImage(Properties.Resources.first);
+                player.first.UpdateImage(playerInfo.first.Image);
             }
             else if (!player.first.Tank.IsInBush() && player.first is DamageDown)
             {
                 player.first = new DamageUp(player.first);
-                player.first.UpdateImage(Properties.Resources.first);
+                player.first.UpdateImage(playerInfo.first.Image);
             }
 
             if (player.second.Tank.IsInBush() && player.second is not DamageDown)
             {
                 player.second = new DamageDown(player.second);
-                player.second.UpdateImage(Properties.Resources.second);
+                player.second.UpdateImage(playerInfo.second.Image);
             }
             else if (!player.second.Tank.IsInBush() && player.second is DamageDown)
             {
                 player.second = new DamageUp(player.second);
-                player.second.UpdateImage(Properties.Resources.second);
+                player.second.UpdateImage(playerInfo.second.Image);
             }
 
 
@@ -308,6 +309,7 @@ namespace Battle_Of_Tanks
                     break;
                 }
             }
+
             foreach (var obj in gameObjects)
             {
                 foreach (var armor in armors.first)
@@ -321,7 +323,10 @@ namespace Battle_Of_Tanks
                         break;
                     }
                 }
+            }
 
+            foreach (var obj in gameObjects)
+            {
                 foreach (var armor in armors.second)
                 {
                     if (armor.Armor.Position.Intersects(obj.Position) && obj.IsSolid)
@@ -378,6 +383,12 @@ namespace Battle_Of_Tanks
             tank.PictureBox.Dispose();
             Timer.Stop();
             MessageBox.Show("Выиграл игрок: " + tank.Name);
+            foreach (Control control in _gamePanel.Controls)
+            {
+                control.Dispose();
+            }
+            _gamePanel.Dispose();
+            EndGame();
         }
         private void KeyIsUpFirst(KeyEventArgs e)
         {
@@ -493,7 +504,7 @@ namespace Battle_Of_Tanks
                 playerInfo.first.Damage,
                 playerInfo.first.Speed,
                 playerInfo.first.SpeedArmor,
-                Properties.Resources.first,
+                playerInfo.first.Image,
                 playerInfo.first.Name);
             playerSettings.second = new
                 (
@@ -501,7 +512,7 @@ namespace Battle_Of_Tanks
                 playerInfo.second.Damage,
                 playerInfo.second.Speed,
                 playerInfo.second.SpeedArmor,
-                Properties.Resources.second,
+                playerInfo.second.Image,
                 playerInfo.second.Name);
         }
         private void InitializeGameComponent()
@@ -564,7 +575,7 @@ namespace Battle_Of_Tanks
 
         private void enterPlayerFirstButton_Click(object sender, EventArgs e)
         {
-            TankSelectionForm tankSelectionForm = new TankSelectionForm(this);
+            TankSelectionForm tankSelectionForm = new TankSelectionForm(this, availableTanks);
             if (tankSelectionForm.ShowDialog() == DialogResult.OK)
             {
                 playerInfo.first = TankInfo.TankInFoForPLayer;
@@ -575,13 +586,38 @@ namespace Battle_Of_Tanks
 
         private void enterPlayerSecondButton_Click(object sender, EventArgs e)
         {
-            TankSelectionForm tankSelectionForm = new TankSelectionForm(this);
+            TankSelectionForm tankSelectionForm = new TankSelectionForm(this, availableTanks);
             if (tankSelectionForm.ShowDialog() == DialogResult.OK)
             {
                 playerInfo.second = TankInfo.TankInFoForPLayer;
                 enterPlayerSecondButton.BackColor = Color.Green;
                 registerPlayer.second = true;
             }
+        }
+
+        private void InitializeAvailableTanks()
+        {
+            // Добавляем информацию о каждом танке в список доступных танков
+            // Здесь вы можете заполнить информацию о танках из вашей игры
+            // Например, вы можете добавить изображения, названия и характеристики танков
+            availableTanks.Add(new TankInfo("Дефолтный", "Дефолтный", Properties.Resources.first, 100, 10, 10, 50));
+            availableTanks.Add(new TankInfo("Средняк", "Средняк", Properties.Resources.second, 120, 12, 12, 60));
+            availableTanks.Add(new TankInfo("Сбалансированный", "Сбалансированный", Properties.Resources.third, 150, 15, 15, 70));
+            availableTanks.Add(new TankInfo("Слабый", "Слабый", Properties.Resources.fourth, 80, 8, 8, 40));
+            availableTanks.Add(new TankInfo("Живучий", "Живучий", Properties.Resources.fifth, 200, 20, 20, 80));
+        }
+
+        private void EndGame()
+        {
+            availableTanks.Clear();
+            InitializeAvailableTanks();
+            registerPlayer = (false, false);
+            enterPlayerFirstButton.BackColor = Color.Red;
+            enterPlayerSecondButton.BackColor = Color.Red;
+            _progressBar.first.Dispose();
+            _progressBar.second.Dispose();
+            _label.first.Dispose();
+            _label.second.Dispose();
         }
     }
 }

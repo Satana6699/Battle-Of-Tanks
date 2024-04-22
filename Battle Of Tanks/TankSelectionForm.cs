@@ -11,12 +11,10 @@ namespace Battle_Of_Tanks
         // Создаем список доступных танков
         private List<TankInfo> availableTanks = new List<TankInfo>();
         private FlowLayoutPanel tankSelectionFlowLayoutPanel;
-        private Form parentForm;
-        public TankSelectionForm(Form parent)
+        public TankSelectionForm(Form parent, List<TankInfo> availableTanks)
         {
             InitializeComponent();
-
-            this.parentForm = parent; // Сохраняем ссылку на родительскую форму
+            this.availableTanks = availableTanks;
             this.Size = new Size(500, 500);
 
             // Центрируем форму относительно родительской формы
@@ -24,8 +22,6 @@ namespace Battle_Of_Tanks
             this.Location = new Point(parent.Left + (parent.Width - this.Width) / 2, parent.Top + (parent.Height - this.Height) / 2);
 
             CreateTankSelectionFlowLayoutPanel();
-            // Заполняем информацию о доступных танках
-            InitializeAvailableTanks();
 
             // Отображаем информацию о танках на форме
             DisplayAvailableTanks();
@@ -38,18 +34,6 @@ namespace Battle_Of_Tanks
             tankSelectionFlowLayoutPanel.AutoScroll = true;
             tankSelectionFlowLayoutPanel.Dock = DockStyle.Fill;
             Controls.Add(tankSelectionFlowLayoutPanel);
-        }
-        // Метод для заполнения информации о доступных танках
-        private void InitializeAvailableTanks()
-        {
-            // Добавляем информацию о каждом танке в список доступных танков
-            // Здесь вы можете заполнить информацию о танках из вашей игры
-            // Например, вы можете добавить изображения, названия и характеристики танков
-            availableTanks.Add(new TankInfo("Дефолтный", "Дефолтный", Properties.Resources.first, 100, 10, 10, 50));
-            availableTanks.Add(new TankInfo("Средняк", "Средняк", Properties.Resources.first, 120, 12, 12, 60));
-            availableTanks.Add(new TankInfo("Сбалансированный", "Сбалансированный", Properties.Resources.first, 150, 15, 15, 70));
-            availableTanks.Add(new TankInfo("Слабый", "Слабый", Properties.Resources.first, 80, 8, 8, 40));
-            availableTanks.Add(new TankInfo("Живучий", "Живучий", Properties.Resources.first, 200, 20, 20, 80));
         }
 
         // Метод для отображения информации о танках на форме
@@ -66,7 +50,7 @@ namespace Battle_Of_Tanks
 
                 // Создаем изображение танка
                 PictureBox tankPictureBox = new PictureBox();
-                tankPictureBox.Image = Properties.Resources.tank;
+                tankPictureBox.Image = tankInfo.Image;
                 tankPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
                 tankPictureBox.Size = new Size(80, 80);
                 tankPictureBox.Location = new Point(10, 10);
@@ -129,7 +113,7 @@ namespace Battle_Of_Tanks
                 selectButton.Click += (sender, e) =>
                 {
                     TankInfo.SetPlayer(tankInfo);
-                    //this.Close();
+                    availableTanks.Remove(tankInfo);
                     DialogResult = DialogResult.OK;
                 };
 
