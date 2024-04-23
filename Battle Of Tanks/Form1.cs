@@ -11,11 +11,12 @@ namespace Battle_Of_Tanks
 {
     public partial class Form1 : Form
     {
-        private (SettingsPlayer first, SettingsPlayer second) playerSettings;
         private (TankPicture first, TankPicture second) player;
+        private (SettingsPlayer first, SettingsPlayer second) playerSettings;
         private (List<ArmorPicture> first, List<ArmorPicture> second) armors = new(new List<ArmorPicture>(0), new List<ArmorPicture>(0));
         private List<GameObjectPicture> gameObjectsPicture = new List<GameObjectPicture>(0);
         private ((bool Up, bool Left, bool Down, bool Right) first, (bool Up, bool Left, bool Down, bool Right) second) click;
+
         private List<GameObject> gameObjects;
         private (char first, char second) Piu = ('c', 'n');
         private (TankInfo first, TankInfo second) playerInfo;
@@ -42,7 +43,7 @@ namespace Battle_Of_Tanks
 
         private void MapGenerate()
         {
-            string[,] strings = MapManager.Reed(@"D:\Семестр 4 (полигон)\Курсовая работа\Battle Of Tanks\Battle Of Tanks\data\maps\mapa.txt");
+            string[,] strings = MapManager.Reed(@"data\maps\mapa.txt");
 
             int unitObject = 37;
             _gamePanel.Location = new System.Drawing.Point(12, 52);
@@ -50,6 +51,7 @@ namespace Battle_Of_Tanks
             _gamePanel.Height = unitObject * strings.GetLength(0);
 
             gameObjects = MapManager.Generate(strings, _gamePanel.Width, _gamePanel.Height);
+
             foreach (var gameObject in gameObjects)
             {
                 Image image = null;
@@ -102,6 +104,7 @@ namespace Battle_Of_Tanks
                     player.second.UpdateDate();
                     box.Visible = false;
                 }
+
                 gameObjectsPicture.Add(new BlockPicture(gameObject, box));
                 gameObjectsPicture[gameObjectsPicture.Count - 1].UpdateDate();
                 _gamePanel.Controls.Add(gameObjectsPicture[gameObjectsPicture.Count - 1].PictureBox);
@@ -593,7 +596,7 @@ namespace Battle_Of_Tanks
             Controls.Add(_gamePanel);
             _gamePanel.BringToFront();
             _gamePanel.BackColor = System.Drawing.Color.Gray;
-            this.Focus();
+            _gamePanel.Focus();
         }
         private void CreateProgressBar()
         {

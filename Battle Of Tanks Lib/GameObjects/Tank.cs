@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace Battle_Of_Tanks_Lib.GameObjects
 {
-    public enum MovementHelper
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
+    
     public class Tank : DynamicObject
     {
         public List<Armor> armors = new List<Armor>(0);

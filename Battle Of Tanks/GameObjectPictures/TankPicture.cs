@@ -10,8 +10,6 @@ namespace Battle_Of_Tanks.GameObjectPictures
 {
     public class TankPicture : GameObjectPicture
     {
-        public delegate Image ImageUpdateHandler();
-        public event ImageUpdateHandler ImageUpdated;
         public Tank Tank { get; set; }
         public Image Image { get; set; }
         public string Name { get; set; }
@@ -23,10 +21,6 @@ namespace Battle_Of_Tanks.GameObjectPictures
             Name = name;
         }
 
-        public void SetImageUpdateDelegate(ImageUpdateHandler imageUpdated)
-        {
-            ImageUpdated += imageUpdated;
-        }
         public void UpdateImage(Image image)
         {
             Image = image;
