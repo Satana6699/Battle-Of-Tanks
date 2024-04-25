@@ -9,8 +9,8 @@ namespace Battle_Of_Tanks.GameObjectPictures
 {
     public class ArmorPicture : GameObjectPicture
     {
-        public Armor Armor;
-        public ArmorPicture(Armor armor, PictureBox pictureBox) : base(armor, pictureBox)
+        public Ammor Armor;
+        public ArmorPicture(Ammor armor, PictureBox pictureBox) : base(armor, pictureBox)
         {
             this.Armor = armor;
         }

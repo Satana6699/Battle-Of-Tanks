@@ -39,7 +39,7 @@
             // 
             // Timer
             // 
-            Timer.Interval = 30;
+            Timer.Interval = 15;
             Timer.Tick += MainTimerEvent;
             // 
             // playButton

@@ -27,7 +27,6 @@ namespace Battle_Of_Tanks.GameObjectPictures
         }
         public override void UpdateDate()
         {
-            PictureBox.Location = new System.Drawing.Point(Tank.Position.Point.X, Tank.Position.Point.Y);
             Image image = (Image)Image.Clone();
             switch (Tank.movementHelper)
             {
@@ -45,7 +44,6 @@ namespace Battle_Of_Tanks.GameObjectPictures
                 case MovementHelper.Left:
                     image.RotateFlip(RotateFlipType.Rotate180FlipNone);
                     break;
-
             }
             PictureBox.Image = image;
             base.UpdateDate();

@@ -9,12 +9,12 @@ namespace Battle_Of_Tanks_Lib.GameObjects
     
     public class Tank : DynamicObject
     {
-        public List<Armor> armors = new List<Armor>(0);
+        public List<Ammor> ammors = new List<Ammor>(0);
         public int ArmorMaxPoint { get; private set; }
         public int ArmorPoint { get; private set; }
         public int Damage { get; set; }
         public int SpeedArmor { get; private set; }
-        private int _maxArmors = 3;
+        private int _maxArmors = 2;
         private bool isInBush = false;
         private bool isInSwamp = false;
 
@@ -35,14 +35,14 @@ namespace Battle_Of_Tanks_Lib.GameObjects
 
         public void TakeDamage(int damage) => ArmorPoint -= damage;
 
-        public Armor Piu()
+        public Ammor Piu()
         {
             int widthArmor = Convert.ToInt32(0.5 * Position.Width);
             int heightArmor = Convert.ToInt32(0.5 * Position.Height);
 
-            armors.Add
+            ammors.Add
                 (
-                    new Armor
+                    new Ammor
                             (
                                 new Rectangle
                                 (
@@ -59,16 +59,16 @@ namespace Battle_Of_Tanks_Lib.GameObjects
                                 SpeedArmor
                             )
                     );
-            return armors[armors.Count - 1];
+            return ammors[ammors.Count - 1];
         }
 
         public bool IsPiu()
         {
-            return armors.Count <= _maxArmors - 1;
+            return ammors.Count <= _maxArmors - 1;
         }
 
 
-        public void Remove(Armor armor) => armors.Remove(armor);
+        public void Remove(Ammor armor) => ammors.Remove(armor);
 
         public void EnterBush()
         {

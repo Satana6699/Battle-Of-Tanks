@@ -13,7 +13,7 @@ namespace Battle_Of_Tanks
     {
         private (TankPicture first, TankPicture second) player;
         private (SettingsPlayer first, SettingsPlayer second) playerSettings;
-        private (List<ArmorPicture> first, List<ArmorPicture> second) armors = new(new List<ArmorPicture>(0), new List<ArmorPicture>(0));
+        private (List<ArmorPicture> first, List<ArmorPicture> second) ammors = new(new List<ArmorPicture>(0), new List<ArmorPicture>(0));
         private List<GameObjectPicture> gameObjectsPicture = new List<GameObjectPicture>(0);
         private ((bool Up, bool Left, bool Down, bool Right) first, (bool Up, bool Left, bool Down, bool Right) second) click;
 
@@ -342,7 +342,7 @@ namespace Battle_Of_Tanks
 
         private void ArmorManager()
         {
-            foreach (var armor in armors.first)
+            foreach (var armor in ammors.first)
             {
                 armor.Armor.Move();
                 armor.UpdateDate();
@@ -354,12 +354,12 @@ namespace Battle_Of_Tanks
                     _gamePanel.Controls.Remove(armor.PictureBox);
                     armor.PictureBox.Dispose();
                     player.first.Tank.Remove(armor.Armor);
-                    armors.first.Remove(armor);
+                    ammors.first.Remove(armor);
                     break;
                 }
             }
 
-            foreach (var armor in armors.second)
+            foreach (var armor in ammors.second)
             {
                 armor.Armor.Move();
                 armor.UpdateDate();
@@ -370,36 +370,35 @@ namespace Battle_Of_Tanks
                     _gamePanel.Controls.Remove(armor.PictureBox);
                     armor.PictureBox.Dispose();
                     player.second.Tank.Remove(armor.Armor);
-                    armors.second.Remove(armor);
+                    ammors.second.Remove(armor);
                     break;
                 }
             }
 
             foreach (var obj in gameObjects)
             {
-                foreach (var armor in armors.first)
+                foreach (var armor in ammors.first)
                 {
-                    if (armor.Armor.Position.Intersects(obj.Position) && obj.IsSolid)
+                    if ((armor.Armor.Position.Intersects(obj.Position) && obj.IsSolid) || !armor.Armor.IsLive())
                     {
                         _gamePanel.Controls.Remove(armor.PictureBox);
                         armor.PictureBox.Dispose();
                         player.first.Tank.Remove(armor.Armor);
-                        armors.first.Remove(armor);
+                        ammors.first.Remove(armor);
                         break;
                     }
                 }
             }
-
             foreach (var obj in gameObjects)
             {
-                foreach (var armor in armors.second)
+                foreach (var armor in ammors.second)
                 {
-                    if (armor.Armor.Position.Intersects(obj.Position) && obj.IsSolid)
+                    if ((armor.Armor.Position.Intersects(obj.Position) && obj.IsSolid) || !armor.Armor.IsLive())
                     {
                         _gamePanel.Controls.Remove(armor.PictureBox);
                         armor.PictureBox.Dispose();
                         player.second.Tank.Remove(armor.Armor);
-                        armors.second.Remove(armor);
+                        ammors.second.Remove(armor);
                         break;
                     }
                 }
@@ -421,7 +420,7 @@ namespace Battle_Of_Tanks
                     );
                 armorPicture.UpdateDate();
                 armorPicture.PictureBox.BringToFront();
-                armors.first.Add(armorPicture);
+                ammors.first.Add(armorPicture);
             }
 
             if (e.KeyChar == Piu.second && player.second.Tank.IsPiu())
@@ -438,7 +437,7 @@ namespace Battle_Of_Tanks
                     );
                 armorPicture.UpdateDate();
                 armorPicture.PictureBox.BringToFront();
-                armors.second.Add(armorPicture);
+                ammors.second.Add(armorPicture);
             }
         }
 
